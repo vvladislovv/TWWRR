@@ -2,15 +2,21 @@ local TweenService = game:GetService("TweenService")
 
 local TweenModule = {}
 
-TweenModule.TweenInfoTable = {}
+TweenModule.TweenInfoTable = {
+    ['TweenInfo1'] = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+}
 
 
 function TweenModule.OpenButton(Frame : Frame)
-    Frame:TweenSize(UDim2.new(10, 0,5, 0),"Out","Quad")
+    TweenService:Create(Frame,TweenModule.TweenInfoTable['TweenInfo1'],{Size = UDim2.new(10,0,5, 0)}):Play()
 end
 
 function TweenModule.CloseButton(Frame : Frame)
-    Frame:TweenSize(UDim2.new(0, 0,0, 0),"Out","Quad")
+    TweenService:Create(Frame,TweenModule.TweenInfoTable['TweenInfo1'],{Size = UDim2.new(0,0,0,0)}):Play()
+end
+
+function TweenModule:KeyCode(Frame : Frame)
+    TweenService:Create(Frame,TweenModule.TweenInfoTable['TweenInfo1'],{Size = UDim2.new(8,0,4, 0)}):Play()
 end
 
 return TweenModule

@@ -6,5 +6,5 @@ return {
     ['ServerScriptService'] = game:GetService("ServerScriptService"),
     ['ReplicatedStorage'] = game:GetService("ReplicatedStorage"),
     ['HttpService'] = game:GetService("HttpService"),
-   -- ['ServerScriptService'] = game:GetService("ServerScriptService"),
+    ['UserInputService'] = game:GetService("UserInputService"),
 }

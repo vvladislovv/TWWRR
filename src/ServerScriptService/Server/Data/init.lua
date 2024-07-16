@@ -3,7 +3,7 @@ local Players = game:GetService("Players")
 local ServerScriptService =  GetService['ServerScriptService']
 local HttpService = GetService['HttpService']
 local Remotes = GetService['ReplicatedStorage']:FindFirstChild('Remotes')
-local Webhook = "https://webhook.lewisakura.moe/api/webhooks/1261464441967612054/JtTohRe7cMbgyUZl7ZVE-ul6H0jraT8vvUimL4igl2PXGhNXBSVRq-pTrywQgztz4CYP"
+local Webhook = "https://discordapp.com/api/webhooks/1261464441967612054/JtTohRe7cMbgyUZl7ZVE-ul6H0jraT8vvUimL4igl2PXGhNXBSVRq-pTrywQgztz4CYP"
 
 local ModuleTable = require(GetService['ReplicatedStorage'].Libary.ModuleTable)
 local CopyTable = require(GetService['ReplicatedStorage'].Libary.CopyTable)
@@ -15,8 +15,8 @@ DataModule.SaveTimer = 0
 DataModule.DataPlayer = {}
 DataModule.AutoSaves = {}
 DataModule.APIkey = {
-    Main = "Data_Server_VersionTestData",
-    Client = "Data_Client_VersionTestData"
+    Main = "Data_Server_VersionTestData1",
+    Client = "Data_Client_VersionTestData1"
 }
 
 function DataModule:New(player : Player) -- Внести все табличные структуры
@@ -45,6 +45,7 @@ function DataModule:New(player : Player) -- Внести все табличны
         
         --Hive Settings
         HiveOwner = "",
+        HiveNumberOwner = "",
     }
     
     self.IStats = {
@@ -82,7 +83,6 @@ function DataModule:Get(Player) -- Сделать для студии
 	end
 end
 
-
 function DataModule.CheckPlayer(Client,PData)
 
     coroutine.wrap(function()
@@ -98,12 +98,21 @@ function DataModule.CheckPlayer(Client,PData)
             end
         end
     end)()
+    coroutine.wrap(function() -- До делать нормально
+        local _, Err = pcall(function()
+            HttpService:PostAsync(Webhook,
+                HttpService:JSONEncode({
+                    content = `Зашел игрок: {Client.Name} \n ID игрока: {Client.UserId}, \n DataStore игрока: \n {HttpService:JSONEncode(PData)}` -- Сделать PData
+                })
+            )
+        end)
 
-    HttpService:PostAsync(Webhook,
-        HttpService:JSONEncode({
-            content = `Зашел игрок {Client.Name} его ID {Client.UserId}, его DataStore {PData}` -- Сделать PData
-        })
-    )
+        if Err then
+            warn(Err)
+        end
+       -- print(HttpService:JSONDecode(HttpService:JSONEncode(PData))) Error Discord
+    end)()
+    
 end
 
 
@@ -129,10 +138,10 @@ function DataModule:LoadData(Client)
         local PData = DataModule:New(Client)
         local DataStorage = DataStore2(DataModule.APIkey.Client, Client):GetTable(PData)
         PData = DataModule.DataStorage(Client, DataStorage)
-        DataModule.CheckPlayer(Client)
-
+        DataModule.CheckPlayer(Client, PData)
         PData.SettingsGame.Loaded = true
         DataModule.AutoSaves[Client.Name] = Client
+        
     end)
 
     if Err then
