@@ -53,6 +53,21 @@ function DataModule:New(player : Player) -- Внести все табличны
         Pollen = 0,
     }
 
+    self.HiveModule = {
+        HiveSlotAll = 15, -- PlayerSlots
+        
+        WaspSlotHive = {
+            [1] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            }
+        }
+    }
+    
+
     
     self.Equipment = {}
     DataModule.DataPlayer[player.Name] = self
@@ -74,7 +89,7 @@ function DataModule:StudioItems(Player)
 end
 
 
-function DataModule:Get(Player) -- Сделать для студии
+function DataModule:Get(Player) 
     if game:GetService("RunService"):IsServer() then
         DataModule:StudioItems(Player)
 		return DataModule.DataPlayer[Player.Name]
@@ -130,6 +145,7 @@ end
 function SaveData(client, PData)
     print(DataModule.DataPlayer[client.Name])
 	DataStore2(DataModule.APIkey.Client, client):Set(CopyTable:CopyWithoutFunctions(PData))
+    Remotes.DataUpdate:FireClient(client,PData)
 end
 
 function DataModule:LoadData(Client)
