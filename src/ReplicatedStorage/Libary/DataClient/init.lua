@@ -1,29 +1,32 @@
+local Player = game:GetService("Players").LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Remotes = ReplicatedStorage.Remotes
-local PData = nil
 local DataClient = {}
 -- Придумать как сделать постонное обновление 
 -- Добавить истязание улья
+DataClient[Player.Name] = {}
 function DataClient:PDataClient() -- Вместо _G.PData модуль
     local _,Err = pcall(function()
         repeat task.wait()
-            PData = Remotes.GetDataSave:InvokeServer()
-        until PData ~= nil
+            if game:GetService("RunService"):IsClient() then
+                DataClient[Player.Name] = Remotes.GetDataSave:InvokeServer()
+                print(DataClient[Player.Name])
+            end
+        until DataClient[Player.Name] ~= {}
     end)
 
     if Err then
         warn(Err)
     end
     --print(PData)
-    return PData
+    return DataClient[Player.Name]
 end
 
 function UpdateData(PDataNew)
     local _, Err = pcall(function()
         if PDataNew ~= nil then
-            PData = PDataNew
+            DataClient[Player.Name] = PDataNew
             DataClient:PDataClient()
-            print(PDataNew)
         end
     end)
 
@@ -32,12 +35,11 @@ function UpdateData(PDataNew)
     end
 end
 
-function DataClient:Get() 
+function DataClient:Get(Player)
     if game:GetService("RunService"):IsClient() then
-		return PData
-	end
+        return DataClient[Player.Name]
+    end 
 end
-
 
 Remotes.DataUpdate.OnClientEvent:Connect(UpdateData)
 

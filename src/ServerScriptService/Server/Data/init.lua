@@ -15,8 +15,8 @@ DataModule.SaveTimer = 0
 DataModule.DataPlayer = {}
 DataModule.AutoSaves = {}
 DataModule.APIkey = {
-    Main = "Data_Server_VersionTestData1",
-    Client = "Data_Client_VersionTestData1"
+    Main = "Data_Server_VersionTestData3",
+    Client = "Data_Client_VersionTestData3"
 }
 
 function DataModule:New(player : Player) -- Внести все табличные структуры
@@ -54,7 +54,7 @@ function DataModule:New(player : Player) -- Внести все табличны
     }
 
     self.HiveModule = {
-        HiveSlotAll = 15, -- PlayerSlots
+        HiveSlotAll = 33, -- PlayerSlots
         
         WaspSlotHive = {
             [1] = {
@@ -63,7 +63,231 @@ function DataModule:New(player : Player) -- Внести все табличны
                 Rarity = "★",
                 Color = "Pupler",
 				Band = 0,
-            }
+            },
+            [2] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [3] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [4] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [5] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [6] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [7] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [8] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [9] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [10] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [11] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [12] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [13] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [14] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [15] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [16] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [17] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [18] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [19] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [20] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [21] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [22] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [23] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [24] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [25] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [26] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [27] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [28] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [29] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [30] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [31] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [32] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
+            [33] = {
+                Name  = 'Test',
+                Level = 1,
+                Rarity = "★",
+                Color = "Pupler",
+				Band = 0,
+            },
         }
     }
     
@@ -113,7 +337,7 @@ function DataModule.CheckPlayer(Client,PData)
             end
         end
     end)()
-    coroutine.wrap(function() -- До делать нормально
+    --[[coroutine.wrap(function() -- До делать нормально
         local _, Err = pcall(function()
             HttpService:PostAsync(Webhook,
                 HttpService:JSONEncode({
@@ -126,7 +350,7 @@ function DataModule.CheckPlayer(Client,PData)
             warn(Err)
         end
        -- print(HttpService:JSONDecode(HttpService:JSONEncode(PData))) Error Discord
-    end)()
+    end)()]]
     
 end
 
