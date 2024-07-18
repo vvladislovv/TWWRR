@@ -1,5 +1,6 @@
 local HiveServerModule = {}
 
+local Players = game:GetService("Players")
 local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -38,7 +39,7 @@ end
 function CheckSlotWasp(CheckSlot : number, Hive : Folder, PData : table)
     for NumberSlot, GetSlot in next, PData.HiveModule.WaspSlotHive do
         if NumberSlot == CheckSlot then
-            HiveServerModule:SpawnWaspSlot(GetSlot.Name, Hive, CheckSlot)
+            HiveServerModule:SpawnWaspSlot(GetSlot.Name, Hive, CheckSlot, PData)
             local Rarity = tostring(GetSlot.Rarity)
             local GetTableRarity = ModuleTable.Rarity(Rarity)
             if GetTableRarity ~= nil then
@@ -53,9 +54,9 @@ function CheckSlotWasp(CheckSlot : number, Hive : Folder, PData : table)
 end
 
 
-function HiveServerModule:SpawnWaspSlot(WaspName : string, Hive : Folder, CheckSlot : number)
+function HiveServerModule:SpawnWaspSlot(WaspName : string, Hive : Folder, CheckSlot : number, PData : table)
     local WaspModel = ReplicatedStorage.Wasps[WaspName]:Clone()
-    WaspModel.Parent = workspace.GameSettings.Wasps
+    WaspModel.Parent = workspace.GameSettings.Wasps[PData.SettingsGame.PlayerName]
     local PosSlot = Hive.Slots[CheckSlot].Down.SpawnWasp
     WaspModel.Model:SetPrimaryPartCFrame(CFrame.new(PosSlot.WorldCFrame.Position.X,PosSlot.WorldCFrame.Position.Y,PosSlot.WorldCFrame.Position.Z-3) * CFrame.Angles(0,math.rad(90),0)) 
     TweenModule:CreateWaspHive(WaspModel.Model,PosSlot)
@@ -64,6 +65,11 @@ end
 function SpawnSlotHive(Hive : Folder, PData : table)
     local CheckSlotPlayer = PData.HiveModule.HiveSlotAll
     local CheckSlot = 0
+
+    if not workspace.GameSettings.Wasps:FindFirstChild(PData.SettingsGame.PlayerName) then
+        local FolderPlayer : Instance = Instance.new('Folder',workspace.GameSettings.Wasps)
+        FolderPlayer.Name = PData.SettingsGame.PlayerName
+    end
 
     if CheckSlotPlayer ~= CheckSlot then
         repeat
@@ -87,31 +93,37 @@ function HivePlayerLeave(Player) -- Folder -> player -> Bees + Bag new Hives, Ma
 
             local function SpawnHiveSlot()
                 if index:GetAttribute('Owner') == PData.FakeSettings.HiveOwner then
-                    local CheckSlotPlayer = PData.HiveModule.HiveSlotAll
-                    local CheckSlot = 0
-        
-                    if CheckSlotPlayer ~= CheckSlot then
-                        repeat
-                            --task.wait(0.25)
-                            CheckSlot += 1
-                            TweenModule:DestroySlotHive(index, CheckSlot)
+                    for NumberSlot, GetSlot in next, PData.HiveModule.WaspSlotHive do
+                        local CheckSlotPlayer = PData.HiveModule.HiveSlotAll
+                        local CheckSlot = 0
+                        if CheckSlotPlayer ~= CheckSlot then
+                            repeat
+                                CheckSlot += 1
+                                local PosSlot = index.Slots[CheckSlot].Down.SpawnWasp
+                                TweenModule:DestroySlotHive(index, CheckSlot)
+                                workspace.GameSettings.Wasps[Player.Name][GetSlot.Name].Model:SetPrimaryPartCFrame(CFrame.new(PosSlot.WorldCFrame.Position.X,PosSlot.WorldCFrame.Position.Y,PosSlot.WorldCFrame.Position.Z-3) * CFrame.Angles(0,math.rad(90),0))
 
-                            if CheckSlot <= 0 then
-                                CheckSlot = 0
-                            end
+                                coroutine.wrap(function()
+                                    if CheckSlot == CheckSlotPlayer then
+                                        task.wait(0.5)
+                                        workspace.GameSettings.Wasps[Player.Name]:Destroy()
+                                     end
+                                end)()
 
-                        until CheckSlotPlayer == CheckSlot
+                            until CheckSlotPlayer == CheckSlot
+                        end
                     end
                 end
             end
+
             SpawnHiveSlot()
-            index:SetAttribute('Owner', "")
 
             for _, value in workspace.GameSettings.Button:GetChildren() do
+
                 value:SetAttribute('HiveOwner', '')
                 value.B.Enabled = true                
             end
-
+            index:SetAttribute('Owner', "")
             index.Platform.Up.SurfaceGui.Namer.Text = "Nobody"
             index.Platform.Up.SurfaceGui.Tags.Text = ""
             index.NamePlayerHive.NameHive.TextLabel.Text = "Nobody"
