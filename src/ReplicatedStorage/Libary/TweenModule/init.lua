@@ -6,6 +6,8 @@ TweenModule.TweenInfoTable = {
     ['TweenInfo1'] = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
     ['TweenInfoSlot'] = TweenInfo.new(0.45,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
     ['HiveWaspCreate'] = TweenInfo.new(0.45,Enum.EasingStyle.Linear,Enum.EasingDirection.Out),
+    ['FlowerDown'] = TweenInfo.new(0.7, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
+    ['FlowerUp'] = TweenInfo.new(3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
 }
 
 
@@ -35,7 +37,7 @@ function  TweenModule:SlotEffectFoodOff(Slot : BasePart, ColorSlot : Color3)
     TweenService:Create(Slot.Down, TweenModule.TweenInfoTable['TweenInfoSlot'], {Color = ColorSlot[2]}):Play()
 end
 
-function TweenModule:SpawnSlotHive(Hive : Folder,CheckSlot : number)
+function TweenModule:SpawnSlotHive(Hive : Folder, CheckSlot : number)
     local function SlotEffect()
         Hive.Slots[CheckSlot].Up.Material = Enum.Material.Neon
         Hive.Slots[CheckSlot].Down.Material = Enum.Material.Neon
@@ -54,7 +56,7 @@ function TweenModule:SpawnSlotHive(Hive : Folder,CheckSlot : number)
     --Hive.Slots[CheckSlot].Up.ParticleEmitter.Enabled = false
 end
 
-function TweenModule:DestroySlotHive(Hive : Folder,CheckSlot : number)
+function TweenModule:DestroySlotHive(Hive : Folder, CheckSlot : number)
     local function SlotEffect()
         Hive.Slots[CheckSlot].Up.Material = Enum.Material.Neon
         Hive.Slots[CheckSlot].Down.Material = Enum.Material.Neon
@@ -69,6 +71,20 @@ function TweenModule:DestroySlotHive(Hive : Folder,CheckSlot : number)
     TweenService:Create(Hive.Slots[CheckSlot].Down, TweenModule.TweenInfoTable['TweenInfoSlot'], {Transparency = 1}):Play()
     Hive.Slots[CheckSlot].Down.Level.SurfaceGui.Enabled = false
     Hive.Slots[CheckSlot].Down.SurfaceGui.Enabled = false
+end
+
+function TweenModule:FlowerDown(Flower : Part, FlowerPos : Vector3)
+    TweenService:Create(Flower, TweenModule.TweenInfoTable['FlowerDown'], {Position = FlowerPos}):Play()
+end
+
+function TweenModule:RegenUp(Pollen : Part, ToMaxFlower: Vector3, InfoFieldGame : table, FlowerPos : Vector3, FlowerPosTime : Vector3)
+    if ToMaxFlower < InfoFieldGame.RegenFlower then
+        Pollen.ParticleEmitter.Enabled = false
+        TweenService:Create(Pollen, TweenModule.TweenInfoTable["FlowerUp"], {Position = FlowerPos}):Play()
+    else
+        Pollen.ParticleEmitter.Enabled = false
+        TweenService:Create(Pollen, TweenModule.TweenInfoTable["FlowerUp"], {Position = FlowerPosTime}):Play()
+    end
 end
 
 return TweenModule
