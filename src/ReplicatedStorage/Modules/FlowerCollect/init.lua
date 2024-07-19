@@ -1,16 +1,16 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local StampsFolder = ReplicatedStorage.Assert.StampsGame
+local StampsFolder : Folder = ReplicatedStorage.Assert.StampsGame
 
-local GetService = require(ReplicatedStorage.Libary.GetService)
-local DataClient = require(ReplicatedStorage.Libary.DataClient)
-local TweenModule = require(ReplicatedStorage.Libary.TweenModule)
-local LocalPlayer = GetService['LocalPlayers']
+local GetService : ModuleScript = require(ReplicatedStorage.Libary.GetService)
+local DataClient : ModuleScript = require(ReplicatedStorage.Libary.DataClient)
+local TweenModule : ModuleScript = require(ReplicatedStorage.Libary.TweenModule)
+local LocalPlayer : Player = GetService['LocalPlayers']
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-local Remotes = ReplicatedStorage.Remotes
+local Remotes : Folder = ReplicatedStorage.Remotes
 GetField = Remotes.GetField:InvokeServer()
 
-local RayParams = RaycastParams.new()
+local RayParams : RaycastParams = RaycastParams.new()
 RayParams.FilterType = Enum.RaycastFilterType.Include
 RayParams.FilterDescendantsInstances = {workspace.GameSettings.Fields}
 
@@ -49,26 +49,25 @@ end
 
 local function RayStamp(TSS : table)
     return function ()
-        local StartPosition = not TSS.Position and Character.PrimaryPart.Position or TSS.Position
-        local EndPosition = StartPosition + Vector3.new(0,-15,0)
-        local RayResult = workspace:Raycast(StartPosition, EndPosition - StartPosition, RayParams)
+        local StartPosition : Vector3 = not TSS.Position and Character.PrimaryPart.Position or TSS.Position
+        local EndPosition : Vector3 = StartPosition + Vector3.new(0,-15,0)
+        local RayResult : RaycastResult = workspace:Raycast(StartPosition, EndPosition - StartPosition, RayParams)
         return RayResult
     end
 end
 
 function FlowerCollect:FlowerRayCost(TSS : table)
-    local PData = DataClient:Get(LocalPlayer)
-    local ToolStamps = StampsFolder[TSS.Stamp]:Clone()
+    local PData : table = DataClient:Get(LocalPlayer)
+    local ToolStamps : Folder = StampsFolder[TSS.Stamp]:Clone()
     ToolStamps.Parent = workspace.GameSettings.Stamp
     game.Debris:AddItem(ToolStamps, 1)
 
-    local Rayy = RayStamp(TSS)()
+    local Rayy : table = RayStamp(TSS)()
     local _,err = pcall(function()
         coroutine.wrap(function()
-
             if tostring(Rayy.Instance) == "Flower" then
                 if ToolStamps:IsA('Model') then
-                    ToolStamps:GetPrivot(CFrame.new(Rayy.Position + Vector3.new(0,3,0)) * GetRotation()())
+                    ToolStamps:PivotTo(CFrame.new(Rayy.Position + Vector3.new(0,3,0)) * GetRotation()())
                 else
                     ToolStamps.CFrame = CFrame.new(Rayy.Position) * GetRotation()()
                 end
@@ -77,14 +76,14 @@ function FlowerCollect:FlowerRayCost(TSS : table)
             if ToolStamps:IsA('Model') then
                 for _, OBJ in next, (ToolStamps:GetChildren()) do
                     if OBJ.Name ~= "Root" then
-                        local Ray2 = RayStamp({Stamp = OBJ.Position})()
+                        local Ray2 : table = RayStamp({Stamp = OBJ.Position})()
                         if tostring(Ray2.Instance) == "Flower" and PData.FakeSettings.Field ~= "" then
                             Remotes.CollercterFlower:FireServer(Ray2, TSS)
                         end
                     end
                 end
             else
-                local Ray3 = RayStamp({Stamp = ToolStamps.Position})()
+                local Ray3 : table = RayStamp({Stamp = ToolStamps.Position})()
                 if tostring(Ray3.Instance) == "Flower" and PData.FakeSettings.Field ~= "" then
                     Remotes.CollercterFlower:FireServer(Ray3, TSS)
                 end
@@ -101,14 +100,14 @@ end
 FlowerCollect:FlowerRayCost({Stamp = "Testers"}) -- Test
 
 function FlowerCollect:UpFlower(Field : Part) -- string?
-    local InfoField = GetField[Field.Name]
+    local InfoField : table = GetField[Field.Name]
 
     coroutine.wrap(function()
         while Field do task.wait(5)
             for _, FlowerPollen in next, (Field:GetChildren()) do
                 if FlowerPollen:IsA("BasePart") then
 
-                    InfoField = _G.Field.Flowers[FlowerPollen:GetAttribute('ID')]
+                    InfoField = GetField.Flowers[FlowerPollen:GetAttribute('ID')]
                     if FlowerPollen.Position.Y < InfoField.MaxP then
 
                         local ToMaxFlower = tonumber(InfoField.MaxP - FlowerPollen.Position.Y)
@@ -130,19 +129,22 @@ function FlowerEffect(Flower : Part)
     Flower.ParticleEmitter.Enabled = false
 end
 
-function DownFlower(Flower : Part, DecAm : Vector3)
+function DownFlower(Flower : Part, DecAm : Vector3, FlowerTable : table)
     local CopProgram = coroutine.create(FlowerEffect(Flower))
     coroutine.resume(CopProgram)
-    local FlowerPos = Flower.Position - Vector3.new(0,DecAm,0)
+    local FlowerPos : Vector3 = Flower.Position - Vector3.new(0,DecAm,0)
+    Flower:WaitForChild("TopTexture").Transparency = (FlowerTable.MaxP-FlowerPos.Y)/2.5
     TweenModule:FlowerDown(Flower,FlowerPos)
     coroutine.yield(CopProgram)
 end
 
 coroutine.wrap(function()
-    for _, Field in next, workspace.Map.GameSettings.Fields:GetChildren() do
-        FlowerCollect:UpFlowe(Field)
+    for _, Field in next, workspace.GameSettings.Fields:GetChildren() do
+        FlowerCollect:UpFlower(Field)
     end
 end)()
+
+Remotes.FlowerDownSize.OnClientEvent:Connect(DownFlower)
 
 
 return FlowerCollect

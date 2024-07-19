@@ -1,11 +1,11 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local GetService = require(ReplicatedStorage.Libary.GetService)
-local DataClient = require(ReplicatedStorage.Libary.DataClient)
-local Player = GetService['Players'].LocalPlayer
-local HiveFolder = workspace.GameSettings.Hives
-local Remotes = ReplicatedStorage.Remotes
-local StartHive = false
-local PData = DataClient:PDataClient() -- _G.PData
+local GetService : ModuleScript = require(ReplicatedStorage.Libary.GetService)
+local DataClient : ModuleScript = require(ReplicatedStorage.Libary.DataClient)
+local Player : Player = GetService['Players'].LocalPlayer
+local HiveFolder : Folder = workspace.GameSettings.Hives
+local Remotes : Folder = ReplicatedStorage.Remotes
+local StartHive : boolean = false
+local PData : table = DataClient:PDataClient() -- _G.PData
 
 local HiveModule = {}
 

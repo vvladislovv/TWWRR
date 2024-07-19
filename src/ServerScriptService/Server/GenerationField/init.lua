@@ -1,6 +1,6 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Remotes = ReplicatedStorage:WaitForChild('Remotes')
+local Remotes : Folder = ReplicatedStorage:WaitForChild('Remotes')
 
 local FieldModule = {}
 	FieldModule.Flowers = {}
@@ -44,7 +44,7 @@ local FieldModule = {}
 		}
 	}
 
-	function GetFlowerType(FlowerName)
+	function GetFlowerType(FlowerName : string)
 		local Type = {}
 		if string.find(FlowerName, "Mini") then
 			Type["Value"] = "1"
@@ -67,8 +67,8 @@ local FieldModule = {}
 	end
 
 	--! NumberRandom --
-	function GetRandomFlower(FieldName)
-		local MainTable, Number = {}, 0
+	function GetRandomFlower(FieldName : string)
+		local MainTable : table, Number : number = {}, 0
 		for _, imd in pairs(FieldModule.Fields[FieldName].Flowers) do
 			local v = imd[math.random(1,2)]
 			if v > 0 then
@@ -91,22 +91,22 @@ local FieldModule = {}
 	function FieldModule:RegisterFlower(Flower: Part)
 		local _, error = pcall(function()
 
-			local FlowerParentName = Flower.Parent.Name
-			local FlowerType = GetFlowerType(GetRandomFlower(FieldModule.Correspondant[FlowerParentName]))
-			local FlowerColor = FlowerType.Color
-			local ID = #FieldModule.Flowers + 1
+			local FlowerParentName : string = Flower.Parent.Name
+			local FlowerType : string = GetFlowerType(GetRandomFlower(FieldModule.Correspondant[FlowerParentName]))
+			local FlowerColor : string = FlowerType.Color
+			local ID : number = #FieldModule.Flowers + 1
 			Flower:SetAttribute("ID",ID)
 
 			FieldModule.Flowers[ID] = {
 				Color = FlowerColor,
-				Stat = FlowerType,
+				Stat  = FlowerType,
 				MaxP = Flower.Position.Y,
 				MinP = Flower.Position.Y - 2,
 				RegenFlower = 0.3,
 			}
 
-			local Color = FieldModule.Flowers[ID].Color
-			local Number = FieldModule.Flowers[ID].Stat.Value
+			local Color : string = FieldModule.Flowers[ID].Color
+			local Number : number = FieldModule.Flowers[ID].Stat.Value
 			Flower.TopTexture.Texture = FieldModule.FlowerTypes[Color][Number]
 		end)
 
@@ -116,11 +116,11 @@ local FieldModule = {}
 	end
 
 	function FieldModule:GenerateFlower(Field : BasePart, Position : Vector3)
-		local Flower = ReplicatedStorage.Assert.Flower:Clone()
+		local Flower : BasePart = ReplicatedStorage.Assert.Flower:Clone()
 		Flower.Parent = Field
 		Flower.CFrame = Position
 
-		local orientations = {Vector3.new(0, 90, 0), Vector3.new(0, 180, 0),Vector3.new(0, -90, 0), Vector3.new(0, -180, 0)}
+		local orientations : table = {Vector3.new(0, 90, 0), Vector3.new(0, 180, 0),Vector3.new(0, -90, 0), Vector3.new(0, -180, 0)}
 		Flower.Orientation = orientations[math.random(1, 4)]
 
 		FieldModule:RegisterFlower(Flower)
@@ -134,8 +134,8 @@ local FieldModule = {}
         end
     end
     
-    Remotes.GetField.OnServerInvoke = function(client)
-        local PData = FieldModule:GetField(client)
+    Remotes.GetField.OnServerInvoke = function(client : Player)
+        local PData : table = FieldModule:GetField(client)
         return PData
     end
 
@@ -144,12 +144,12 @@ local FieldModule = {}
         for _, Fieldfolder in next, (workspace.GameSettings.FieldsGame:GetChildren()) do
             for _, Zone in next, (Fieldfolder:GetChildren()) do
                 if Zone:IsA("Part") then
-                    local Field = Instance.new("Folder", workspace.GameSettings.Fields)
+                    local Field : Folder = Instance.new("Folder", workspace.GameSettings.Fields)
 					Field.Name = Zone.Parent.Name
 					Zone.Transparency = 1
-					local halfX = (Zone.Size.X / 2) - 1
-					local halfZ = (Zone.Size.Z / 2) - 1
-					local step = 4
+					local halfX : number = (Zone.Size.X / 2) - 1
+					local halfZ : number = (Zone.Size.Z / 2) - 1
+					local step : number = 4
 
 					for x = Zone.Position.X - halfX, Zone.Position.X + halfX, step do
 						for z = Zone.Position.Z - halfZ, Zone.Position.Z + halfZ, step do

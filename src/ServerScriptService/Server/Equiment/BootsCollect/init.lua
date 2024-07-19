@@ -1,0 +1,3 @@
+local BootsCollect = {}
+
+return BootsCollect

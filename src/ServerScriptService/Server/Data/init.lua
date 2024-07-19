@@ -32,10 +32,13 @@ function DataModule:New(player : Player) -- Внести все табличны
         Tutorial = false,
         RobuxPurchases = {}
     }
+    self.SettingsMenu = {
+        ['Pollen Text'] = true
+    }
     self.FakeSettings = {
         --Field Settings
-        Field = nil,
-        OldField = nil,
+        Field = "",
+        OldField = "",
         GuiField = false,
 
         -- Mobs Settings
@@ -50,7 +53,16 @@ function DataModule:New(player : Player) -- Внести все табличны
     
     self.IStats = {
         Honey = 0,
+        DailyHoney = 0,
         Pollen = 0,
+        Capacity = 0,
+    }
+
+    self.BoostGame = {
+        FieldBoost = {},
+        PlayerBoost = {},
+        TokenBoost = {},
+        CraftBoost = {}
     }
 
     self.HiveModule = {
