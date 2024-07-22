@@ -1,9 +1,9 @@
 local GetService = require(game:GetService("ReplicatedStorage").Libary.GetService)
-local Players = game:GetService("Players")
+local Players : Player = game:GetService("Players")
 local ServerScriptService =  GetService['ServerScriptService']
 local HttpService = GetService['HttpService']
-local Remotes = GetService['ReplicatedStorage']:FindFirstChild('Remotes')
-local Webhook = "https://discordapp.com/api/webhooks/1261464441967612054/JtTohRe7cMbgyUZl7ZVE-ul6H0jraT8vvUimL4igl2PXGhNXBSVRq-pTrywQgztz4CYP"
+local Remotes : Folder = GetService['ReplicatedStorage']:FindFirstChild('Remotes')
+local Webhook : HttpService = "https://discordapp.com/api/webhooks/1261464441967612054/JtTohRe7cMbgyUZl7ZVE-ul6H0jraT8vvUimL4igl2PXGhNXBSVRq-pTrywQgztz4CYP"
 
 local ModuleTable = require(GetService['ReplicatedStorage'].Libary.ModuleTable)
 local CopyTable = require(GetService['ReplicatedStorage'].Libary.CopyTable)
@@ -15,8 +15,8 @@ DataModule.SaveTimer = 0
 DataModule.DataPlayer = {}
 DataModule.AutoSaves = {}
 DataModule.APIkey = {
-    Main = "Data_Server_VersionTestData3",
-    Client = "Data_Client_VersionTestData3"
+    Main = "Data_Server_VersionTestData4",
+    Client = "Data_Client_VersionTestData4"
 }
 
 function DataModule:New(player : Player) -- Внести все табличные структуры
@@ -60,7 +60,22 @@ function DataModule:New(player : Player) -- Внести все табличны
 
     self.BoostGame = {
         FieldBoost = {},
-        PlayerBoost = {},
+        PlayerBoost = {
+            ["Instant"] = 0,
+            ["Pupler Instant"] = 0,
+            ["White Instant"] = 0,
+            ["Blue Instant"] = 0,
+
+            ['Pollen'] = 100,
+            ["Pupler Pollen"] = 100,
+            ["White Pollen"] = 100,
+            ["Blue Pollen"] = 100,
+
+            ['Movement Collection'] = 100,
+
+            --// Field Boost 
+            ['BananaPath1'] = 100            
+        },
         TokenBoost = {},
         CraftBoost = {}
     }
@@ -305,7 +320,15 @@ function DataModule:New(player : Player) -- Внести все табличны
     
 
     
-    self.Equipment = {}
+    self.Equipment = {
+        Tool = "Shovel",
+        Bag = "Backpack",
+
+        Shops = {
+            Tools = {['Shovel'] = true},
+            Bags = {['Backpack'] = true}
+        }
+    }
     DataModule.DataPlayer[player.Name] = self
     return self
 end
@@ -318,7 +341,10 @@ function DataModule:StudioItems(Player)
 
         self.IStats = {
             Honey = 1000,
-            Pollen = 1000,
+            DailyHoney = 1000,
+            Pollen = 0,
+            Capacity = 1000,
+            
         }
         return DataModule.DataPlayer[Player.Name]
     end
@@ -369,7 +395,7 @@ end
 
 
 function DataModule.DataStorage(Client, DataStorage) --! CHECK LOAD 
-    local Data = DataModule:Get(Client)
+    local Data : table = DataModule:Get(Client)
 
     for index, value in next, DataStorage do
         Data[index][value] = DataStorage[index][value]
@@ -387,7 +413,7 @@ end
 function DataModule:LoadData(Client)
     local _, Err = pcall(function()
         DataStore2.Combine(DataModule.APIkey.Main,DataModule.APIkey.Client)
-        local PData = DataModule:New(Client)
+        local PData : table = DataModule:New(Client)
         local DataStorage = DataStore2(DataModule.APIkey.Client, Client):GetTable(PData)
         PData = DataModule.DataStorage(Client, DataStorage)
         DataModule.CheckPlayer(Client, PData)
@@ -413,7 +439,7 @@ do
 
 
     game.ReplicatedStorage.Remotes.GetDataSave.OnServerInvoke = function(client)
-		local PData = DataModule:Get(client)
+		local PData : table = DataModule:Get(client)
 		return PData
 	end
 

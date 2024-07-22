@@ -12,6 +12,8 @@ FlowerServerCollect.FlowerPlayerTable = {}
 function FlowerDataBoots(PData : table, Coollected : number, FlowerTable : table, TSS : table, DecAmt : number)
     --// Boosts
     if PData.FakeSettings.FallingDown ~= "" then
+        print(PData.BoostGame.PlayerBoost['Pollen'])
+        print(Coollected)
         Coollected *= (PData.BoostGame.PlayerBoost['Pollen'] / 100)
         Coollected *= (PData.BoostGame.PlayerBoost[FlowerTable.Color..' Pollen'] / 100)
         Coollected *= (PData.BoostGame.PlayerBoost[PData.FakeSettings.OldField] / 100)
@@ -43,34 +45,34 @@ function FlowerDataBoots(PData : table, Coollected : number, FlowerTable : table
     end
 end
 
-function CollectFlower(Player : Player, Flower : Part , TSS : table)
+function CollectFlower(Player : Player, Flower : Part , Tabss : table)
     local PData = Data:Get(Player)
     if PData.IStats.Capacity > PData.IStats.Pollen and PData.FakeSettings.FallingDown ~= "" and (Flower.Position.Y - GenerationField.Flowers[Flower:GetAttribute('ID')].MinP) > 0.2 then
         
-        local FlowerTable : table = GenerationField.Flowersp[Flower:GetAttribute('ID')]
+        local FlowerTable : table = GenerationField.Flowers[Flower:GetAttribute('ID')]
         local FieldName : string = PData.FakeSettings.Field
         local FieldFolder : Instance = workspace.GameSettings:FindFirstChild(FieldName)
-        local Conversion : number = math.round(PData.BoostGame.PlayerBoost[FlowerTable.Color.."Instant"] + PData.BoostGame.PlayerBoost['Instance'])
-        local Collected : number = TSS.Collecting
-        local DecAmt : number = TSS.Power
+        local Conversion : number = math.round(PData.BoostGame.PlayerBoost[FlowerTable.Color.." Instant"] + PData.BoostGame.PlayerBoost['Instant'])
+        local Collected : number = Tabss.TSS.CollectField
+        local DecAmt : number = Tabss.TSS.Power
 
-        local Honey : number, Pollen : number = 0
+        local Honeyy, Pollenn : number = 0, 0
 
-        FlowerDataBoots(PData, Collected, FlowerTable, TSS)
+        FlowerDataBoots(PData, Collected, FlowerTable, Tabss,DecAmt)
 
         if Conversion > 100 then
             Conversion = 100
         end
 
         local Convert = math.round(Collected * (Conversion / 100))
-        if Pollen < 0 then
-            Pollen = 0
+        if Pollenn < 0 then
+            Pollenn = 0
         elseif Convert < 0 then
             Convert = 0
         end
 
-        Honey += Convert
-        Pollen = math.round(Collected - Convert)
+        Honeyy += Convert
+        Pollenn = math.round(Collected - Convert)
 
         Remotes.FlowerDownSize:FireAllClients(Flower,DecAmt, FlowerTable)
 
@@ -83,22 +85,22 @@ function CollectFlower(Player : Player, Flower : Part , TSS : table)
                         end
                     end
                 end
-                FlowerServerCollect.FlowerPlayerTable[Player.Name] = {White = 0, Blue = 0, Coin = 0,  Pupler = 0}
+                FlowerServerCollect.FlowerPlayerTable[Player.Name] = {White = 0, Blue = 0, Honey = 0,  Pupler = 0}
             end
         end)()
 
 
-        if (PData.IStats.Pollen + math.round(Pollen)) > PData.IStats.Capacity then
-            Pollen = PData.IStats.Capacity - PData.IStats.Pollen
+        if (PData.IStats.Pollen + math.round(Pollenn)) > PData.IStats.Capacity then
+            Pollenn = PData.IStats.Capacity - PData.IStats.Pollen
         end
 
-        PData.IStats.Pollen += math.round(Pollen)
-        PData.IStats.Honey = math.round(Honey)
-        PData.IStats.DailyHoney = math.round(Honey)
+        PData.IStats.Pollen += math.round(Pollenn)
+        PData.IStats.Honey = math.round(Honeyy)
+        PData.IStats.DailyHoney = math.round(Honeyy)
 
         if FlowerServerCollect.FlowerPlayerTable[Player.Name] then
-            FlowerServerCollect.FlowerPlayerTable[Player.Name][FlowerTable.Color] += math.round(Pollen)
-            FlowerServerCollect.FlowerPlayerTable[Player.Name].Honey += math.round(Honey)
+            FlowerServerCollect.FlowerPlayerTable[Player.Name][FlowerTable.Color] += math.round(Pollenn)
+            FlowerServerCollect.FlowerPlayerTable[Player.Name].Honey += math.round(Honeyy)
         end
     end
 end
@@ -107,7 +109,7 @@ Remotes.CollercterFlower.OnServerEvent:Connect(CollectFlower)
 
 coroutine.wrap(function()
     game.Players.PlayerAdded:Connect(function(Player : Player)
-        FlowerServerCollect.FlowerPlayerTable[Player.Name] = {White = 0, Blue = 0, Coin = 0,  Pupler = 0}
+        FlowerServerCollect.FlowerPlayerTable[Player.Name] = {White = 0, Blue = 0, Honey = 0,  Pupler = 0}
     end)
 
     game.Players.PlayerRemoving:Connect(function(Player : Player)
@@ -120,9 +122,6 @@ for _, FieldFolder in next, workspace.GameSettings.FieldZone:GetChildren() do
 
     ZonePlus.playerEntered:Connect(function(Player : Player)
         local PData : table = Data:Get(Player)
-        print(GenerationField.Correspondant[FieldFolder.Name])
-        print(PData.FakeSettings)
-        print(FieldFolder)
         PData.FakeSettings.Field = GenerationField.Correspondant[FieldFolder.Name]
         PData.FakeSettings.OldField = FieldFolder.Name
                 

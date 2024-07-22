@@ -31,7 +31,6 @@ function Equipment:StartSysmes()
             end
         end
     end
-
     game.Players.PlayerAdded:Connect(function(Player : Player)
         if Player.Character then -- Если есть(доп проверка)
             Collision(Player.Character)
@@ -49,7 +48,6 @@ end
 function Equipment:Load(Player : Player, Character : Instance)
     NoCollide(Character)
     -- Boots ModuleScript
-
     local Humanoid = Character:FindFirstChild("Humanoid")
     local _, Err = pcall(function()
         Equipment:EquipItem(Player, Humanoid, "Bag")
@@ -76,7 +74,6 @@ end
 
 function Equipment:EquipItem(Player : Player, Humanoid : Humanoid, TypeItems : string)
     local PData : table = Data:Get(Player)
-
     if PData.Equipment[TypeItems] then
         local ItemPData : table = PData.Equipment[TypeItems]
 		local ItemObject : nil
@@ -96,9 +93,15 @@ function Equipment:EquipItem(Player : Player, Humanoid : Humanoid, TypeItems : s
                     ItemObject.Name = TypeItems
                 end
             else
-                ItemObject = ItemsFolder:WaitForChild(TypeItems)[ItemPData.."L"]:Clone()
+
+                ItemObject = ItemsFolder:WaitForChild(TypeItems)[ItemPData]:Clone()
                 if ItemObject:IsA('Accessory') then
                     if TypeItems == "Tool" then
+                        local ColelctSript = game.ServerStorage.ToolScripts:Clone()
+                        ColelctSript.Parent = ItemObject
+                        Humanoid:AddAccessory(ItemObject)
+                        ItemObject.Name = TypeItems
+                    else
                         Humanoid:AddAccessory(ItemObject)
                         ItemObject.Name = TypeItems
                     end 

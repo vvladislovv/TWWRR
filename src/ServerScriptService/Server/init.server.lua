@@ -1,9 +1,12 @@
-local Server = script.Parent.Server
+local Equiment = require(script.Equiment)
+
+local Server : ModuleScript = script.Parent.Server
 local _, Err = pcall(function()
-    --EquipmentModule:StartSysmes()
+    Equiment:StartSysmes()
     for _, index in next, Server:GetDescendants() do
         if index:IsA('ModuleScript') then
             require(index)
+           -- print(index)
         end
     end
 end)

@@ -58,7 +58,8 @@ end
 
 function FlowerCollect:FlowerRayCost(TSS : table)
     local PData : table = DataClient:Get(LocalPlayer)
-    local ToolStamps : Folder = StampsFolder[TSS.Stamp]:Clone()
+
+    local ToolStamps : Folder = StampsFolder[TSS.RayStamp]:Clone()
     ToolStamps.Parent = workspace.GameSettings.Stamp
     game.Debris:AddItem(ToolStamps, 1)
 
@@ -78,14 +79,14 @@ function FlowerCollect:FlowerRayCost(TSS : table)
                     if OBJ.Name ~= "Root" then
                         local Ray2 : table = RayStamp({Stamp = OBJ.Position})()
                         if tostring(Ray2.Instance) == "Flower" and PData.FakeSettings.Field ~= "" then
-                            Remotes.CollercterFlower:FireServer(Ray2, TSS)
+                            Remotes.CollercterFlower:FireServer(Ray2.Instance, TSS)
                         end
                     end
                 end
             else
                 local Ray3 : table = RayStamp({Stamp = ToolStamps.Position})()
                 if tostring(Ray3.Instance) == "Flower" and PData.FakeSettings.Field ~= "" then
-                    Remotes.CollercterFlower:FireServer(Ray3, TSS)
+                    Remotes.CollercterFlower:FireServer(Ray3.Instance, TSS)
                 end
             end
     
@@ -93,30 +94,29 @@ function FlowerCollect:FlowerRayCost(TSS : table)
     end)
 
     if err then
-        warn(err)
+       -- warn(err)
     end
 end
 
-FlowerCollect:FlowerRayCost({Stamp = "Testers"}) -- Test
+--FlowerCollect:FlowerRayCost({Stamp = "Testers"}) -- Test
 
 function FlowerCollect:UpFlower(Field : Part) -- string?
     local InfoField : table = GetField[Field.Name]
 
     coroutine.wrap(function()
-        while Field do task.wait(5)
+        while Field do task.wait(3)
             for _, FlowerPollen in next, (Field:GetChildren()) do
                 if FlowerPollen:IsA("BasePart") then
 
                     InfoField = GetField.Flowers[FlowerPollen:GetAttribute('ID')]
-                    if FlowerPollen.Position.Y < InfoField.MaxP then
+                    if FlowerPollen.Position.Y < InfoField.MinP then
 
-                        local ToMaxFlower = tonumber(InfoField.MaxP - FlowerPollen.Position.Y)
-                        local FlowerPos = FlowerPollen.Position + Vector3.new(0, ToMaxFlower, 0)
-                        local FlowerPosTime = FlowerPollen.Position + Vector3.new(0,InfoField.RegenFlower,0)
+                        local ToMaxFlower : Vector3 = tonumber(InfoField.MinP - FlowerPollen.Position.Y)
+                        local FlowerPos : Vector3 = FlowerPollen.Position + Vector3.new(0, ToMaxFlower, 0)
+                        local FlowerPosTime : Vector3 = FlowerPollen.Position + Vector3.new(0,InfoField.RegenFlower,0)
 
                         TweenModule:RegenUp(FlowerPollen,ToMaxFlower,InfoField,FlowerPos,FlowerPosTime)
                     end
-
                 end 
             end
         end
@@ -125,15 +125,18 @@ end
 
 function FlowerEffect(Flower : Part)
     Flower.ParticleEmitter.Enabled = true
-    task.wait(0.25)
+    task.wait(0.35)
     Flower.ParticleEmitter.Enabled = false
 end
 
 function DownFlower(Flower : Part, DecAm : Vector3, FlowerTable : table)
-    local CopProgram = coroutine.create(FlowerEffect(Flower))
+    local CopProgram = coroutine.create(function()
+        FlowerEffect(Flower)
+    end)
     coroutine.resume(CopProgram)
     local FlowerPos : Vector3 = Flower.Position - Vector3.new(0,DecAm,0)
     Flower:WaitForChild("TopTexture").Transparency = (FlowerTable.MaxP-FlowerPos.Y)/2.5
+    print(math.round(Flower.Position.Y))
     TweenModule:FlowerDown(Flower,FlowerPos)
     coroutine.yield(CopProgram)
 end

@@ -6,8 +6,8 @@ TweenModule.TweenInfoTable = {
     ['TweenInfo1'] = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
     ['TweenInfoSlot'] = TweenInfo.new(0.45,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
     ['HiveWaspCreate'] = TweenInfo.new(0.45,Enum.EasingStyle.Linear,Enum.EasingDirection.Out),
-    ['FlowerDown'] = TweenInfo.new(0.7, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
-    ['FlowerUp'] = TweenInfo.new(3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut),
+    ['FlowerDown'] = TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
+    ['FlowerUp'] = TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.In),
 }
 
 

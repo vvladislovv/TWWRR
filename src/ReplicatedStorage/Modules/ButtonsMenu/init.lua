@@ -1,12 +1,12 @@
-local GetService = require(game:GetService("ReplicatedStorage").Libary.GetService)
+local GetService : ModuleScript = require(game:GetService("ReplicatedStorage").Libary.GetService)
 local ReplicatedStorage = GetService['ReplicatedStorage']
 local UserInputService = GetService['UserInputService']
-local TweenModule = require(ReplicatedStorage.Libary.TweenModule)
+local TweenModule : ModuleScript = require(ReplicatedStorage.Libary.TweenModule)
 
-local Remotes = ReplicatedStorage.Remotes
-local Player = game.Players.LocalPlayer
+local Remotes : Folder = ReplicatedStorage.Remotes
+local Player : Player = game.Players.LocalPlayer
 
-local ScriptButton = nil
+local ScriptButton : nil = nil
 local ButtonModule = {}
 
 function DistationButton(Button : Part, Distation)

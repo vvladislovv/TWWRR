@@ -1,8 +1,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
-local Players = game:GetService("Players")
+local Players : Player = game:GetService("Players")
 
-local Data = require(ServerScriptService.Server.Data)
+local Data : ModuleScript = require(ServerScriptService.Server.Data)
 
 
 local ServerButton = {}
@@ -20,9 +20,9 @@ function Start()
 
             game:GetService("RunService").Heartbeat:Connect(function()
                 for _, player in ipairs(Players:GetPlayers()) do
-                    local Humanoid = player.Character and player.Character:FindFirstChild("Humanoid")
-                    local HumRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-                    local PData = Data:Get(player)
+                    local Humanoid : Humanoid = player.Character and player.Character:FindFirstChild("Humanoid")
+                    local HumRootPart : Humanoid = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+                    local PData : table = Data:Get(player)
                     if Humanoid and Humanoid.Health > 0 and HumRootPart then
                         for _, Button in ipairs(game.Workspace.GameSettings.Button:GetChildren()) do
                             if PData.SettingsGame.Loaded then

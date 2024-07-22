@@ -1,5 +1,5 @@
 game:IsLoaded()
-local ClientScript = game.ReplicatedStorage.Modules
+local ClientScript : ModuleScript = game.ReplicatedStorage.Modules
 local _, Err = pcall(function()
 	
 	coroutine.wrap(function()
