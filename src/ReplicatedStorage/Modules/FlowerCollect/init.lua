@@ -5,10 +5,13 @@ local StampsFolder : Folder = ReplicatedStorage.Assert.StampsGame
 local GetService : ModuleScript = require(ReplicatedStorage.Libary.GetService)
 local DataClient : ModuleScript = require(ReplicatedStorage.Libary.DataClient)
 local TweenModule : ModuleScript = require(ReplicatedStorage.Libary.TweenModule)
+local Zone : ModuleScript = require(ReplicatedStorage.Libary.Zone)
 local LocalPlayer : Player = GetService['LocalPlayers']
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local Remotes : Folder = ReplicatedStorage.Remotes
 GetField = Remotes.GetField:InvokeServer()
+
+local DecAm : nil
 
 local RayParams : RaycastParams = RaycastParams.new()
 RayParams.FilterType = Enum.RaycastFilterType.Include
@@ -102,25 +105,25 @@ end
 
 function FlowerCollect:UpFlower(Field : Part) -- string?
     local InfoField : table = GetField[Field.Name]
-
-    coroutine.wrap(function()
+    task.spawn(function()
         while Field do task.wait(3)
             for _, FlowerPollen in next, (Field:GetChildren()) do
                 if FlowerPollen:IsA("BasePart") then
 
                     InfoField = GetField.Flowers[FlowerPollen:GetAttribute('ID')]
-                    if FlowerPollen.Position.Y < InfoField.MinP then
+                    if FlowerPollen.Size.Y <= 1.75 then
 
                         local ToMaxFlower : Vector3 = tonumber(InfoField.MinP - FlowerPollen.Position.Y)
-                        local FlowerPos : Vector3 = FlowerPollen.Position + Vector3.new(0, ToMaxFlower, 0)
+                        local ToMaxFlowerSize : Vector3 = tonumber(InfoField.MinP - FlowerPollen.Size.Y)
                         local FlowerPosTime : Vector3 = FlowerPollen.Position + Vector3.new(0,InfoField.RegenFlower,0)
-
-                        TweenModule:RegenUp(FlowerPollen,ToMaxFlower,InfoField,FlowerPos,FlowerPosTime)
+                        --print(ToMaxFlower)
+                       -- print(ToMaxFlowerSize)
+                        TweenModule:RegenUp(FlowerPollen,ToMaxFlower,InfoField,DecAm,FlowerPosTime)
                     end
                 end 
             end
         end
-    end)()
+    end)
 end
 
 function FlowerEffect(Flower : Part)
@@ -129,25 +132,42 @@ function FlowerEffect(Flower : Part)
     Flower.ParticleEmitter.Enabled = false
 end
 
-function DownFlower(Flower : Part, DecAm : Vector3, FlowerTable : table)
-    local CopProgram = coroutine.create(function()
-        FlowerEffect(Flower)
-    end)
-    coroutine.resume(CopProgram)
-    local FlowerPos : Vector3 = Flower.Position - Vector3.new(0,DecAm,0)
-    Flower:WaitForChild("TopTexture").Transparency = (FlowerTable.MaxP-FlowerPos.Y)/2.5
-    print(math.round(Flower.Position.Y))
-    TweenModule:FlowerDown(Flower,FlowerPos)
-    coroutine.yield(CopProgram)
+function DownFlower(Flower : Part, DecAmm : Vector3, FlowerTable : table)
+    if Flower.Size.Y > 0.85 then
+        DecAm = DecAmm
+        coroutine.wrap(function()
+            FlowerEffect(Flower)
+        end)()
+
+        TweenModule:FlowerDown(Flower,DecAmm)
+        Flower:WaitForChild("TopTexture").Transparency = (FlowerTable.MaxP-Flower.Position.Y-DecAmm)/2.5
+        
+    end
 end
 
-coroutine.wrap(function()
-    for _, Field in next, workspace.GameSettings.Fields:GetChildren() do
-        FlowerCollect:UpFlower(Field)
-    end
-end)()
 
 Remotes.FlowerDownSize.OnClientEvent:Connect(DownFlower)
 
+for _, Field in next, workspace.GameSettings.Fields:GetChildren() do
+    FlowerCollect:UpFlower(Field)
+end
+
+for _, FieldFolder in next, workspace.GameSettings.FieldZone:GetChildren() do
+    local ZonePlus : Instance = Zone.new(FieldFolder)
+
+    ZonePlus.playerEntered:Connect(function(Player : Player)
+        local PData : table = DataClient:Get(Player)
+        PData.FakeSettings.Field = GetField.Correspondant[FieldFolder.Name]
+        PData.FakeSettings.OldField = FieldFolder.Name
+                
+    end)
+
+    ZonePlus.localPlayerExited:Connect(function(Player : Player)
+        local PData : table = DataClient:Get(Player)
+
+        PData.FakeSettings.Field = ""
+        
+    end)
+end
 
 return FlowerCollect

@@ -448,7 +448,7 @@ do
         local _, Err = pcall(function()
             while true do task.wait(1)
                 DataModule.SaveTimer += 1
-                if DataModule.SaveTimer > 5 then
+                if DataModule.SaveTimer > 2 then
                     for _, Player in pairs(DataModule.AutoSaves) do
                         if Player ~= nil then
                             local PData = DataModule:Get(Player)

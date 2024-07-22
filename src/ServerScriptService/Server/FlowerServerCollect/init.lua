@@ -12,8 +12,6 @@ FlowerServerCollect.FlowerPlayerTable = {}
 function FlowerDataBoots(PData : table, Coollected : number, FlowerTable : table, TSS : table, DecAmt : number)
     --// Boosts
     if PData.FakeSettings.FallingDown ~= "" then
-        print(PData.BoostGame.PlayerBoost['Pollen'])
-        print(Coollected)
         Coollected *= (PData.BoostGame.PlayerBoost['Pollen'] / 100)
         Coollected *= (PData.BoostGame.PlayerBoost[FlowerTable.Color..' Pollen'] / 100)
         Coollected *= (PData.BoostGame.PlayerBoost[PData.FakeSettings.OldField] / 100)
@@ -28,19 +26,19 @@ function FlowerDataBoots(PData : table, Coollected : number, FlowerTable : table
     end
 
     if FlowerTable.Stat.Value == "1" then
-        Coollected *= 1.25
+        Coollected *= 1
         if DecAmt > 0 then
-            DecAmt /= 1.25
+           -- DecAmt /= 1
         end
     elseif FlowerTable.Stat.Value == "2" then
-        Coollected *= 1.85
+        Coollected *= 1.5
         if DecAmt > 0 then
-            DecAmt /= 1.85
+            --DecAmt /= 1.5
         end
     elseif FlowerTable.Stat.Value == "3" then
-        Coollected *= 2.15
+        Coollected *= 2
         if DecAmt > 0 then
-            DecAmt /= 2.15
+          --  DecAmt /= 2
         end
     end
 end
@@ -54,7 +52,7 @@ function CollectFlower(Player : Player, Flower : Part , Tabss : table)
         local FieldFolder : Instance = workspace.GameSettings:FindFirstChild(FieldName)
         local Conversion : number = math.round(PData.BoostGame.PlayerBoost[FlowerTable.Color.." Instant"] + PData.BoostGame.PlayerBoost['Instant'])
         local Collected : number = Tabss.TSS.CollectField
-        local DecAmt : number = Tabss.TSS.Power
+        local DecAmt : number = Tabss.TSS.SizeCollect
 
         local Honeyy, Pollenn : number = 0, 0
 

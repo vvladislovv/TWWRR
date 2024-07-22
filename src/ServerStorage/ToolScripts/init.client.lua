@@ -69,13 +69,12 @@ RunService.RenderStepped:Connect(function()
         local AnimationTrack : AnimationTrack = Humanoid:LoadAnimation(Animation)
         AnimationTrack.Priority = Enum.AnimationPriority.Action
         AnimationTrack:Play()
-
         if PData.IStats.Pollen >= PData.IStats.Capacity then
             -- noffical
         else
             FlowerModule()
         end
-
+        task.wait(AnimationTrack.Length)
         task.wait(Couldown)
         Debounce = not Debounce
 
