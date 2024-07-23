@@ -79,7 +79,7 @@ function CollectFlower(Player : Player, Flower : Part , Tabss : table)
                 if PData.SettingsGame['Pollen Text'] then
                     for v ,index in next, (FlowerServerCollect.FlowerPlayerTable[Player.Name]) do
                         if index > 0 then
-                            -- VisalEvent Pollen
+                            Remotes.VisualNumberEvent:FireClient(Player,{Pos = Flower.Position, Amt = index, Color = v, Crit = false})
                         end
                     end
                 end

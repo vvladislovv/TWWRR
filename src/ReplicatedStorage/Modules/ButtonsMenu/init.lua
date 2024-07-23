@@ -7,7 +7,7 @@ local Remotes : Folder = ReplicatedStorage.Remotes
 local Player : Player = game.Players.LocalPlayer
 
 local ScriptButton : nil = nil
-local ButtonModule = {}
+local ButtonModule = {} -- через мету таблицу
 
 function DistationButton(Button : Part, Distation)
     local suc, err = pcall(function()
@@ -32,6 +32,7 @@ end
 
 function KeyCode(input, GPE)
     if not GPE then
+        
         if input.KeyCode == Enum.KeyCode.E or input.UserInputType == Enum.UserInputType.Touch then
             AnimKeyCode(ScriptButton, input)
             if ScriptButton:GetAttribute('OpenButton') then

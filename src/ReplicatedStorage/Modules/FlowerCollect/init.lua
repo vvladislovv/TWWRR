@@ -11,8 +11,6 @@ local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local Remotes : Folder = ReplicatedStorage.Remotes
 GetField = Remotes.GetField:InvokeServer()
 
-local DecAm : nil
-
 local RayParams : RaycastParams = RaycastParams.new()
 RayParams.FilterType = Enum.RaycastFilterType.Include
 RayParams.FilterDescendantsInstances = {workspace.GameSettings.Fields}
@@ -105,26 +103,26 @@ end
 
 function FlowerCollect:UpFlower(Field : Part) -- string?
     local InfoField : table = GetField[Field.Name]
+
     task.spawn(function()
-        while Field do task.wait(3)
+        while Field do task.wait(5)
             for _, FlowerPollen in next, (Field:GetChildren()) do
                 if FlowerPollen:IsA("BasePart") then
 
                     InfoField = GetField.Flowers[FlowerPollen:GetAttribute('ID')]
-                    if FlowerPollen.Size.Y <= 1.75 then
-
-                        local ToMaxFlower : Vector3 = tonumber(InfoField.MinP - FlowerPollen.Position.Y)
-                        local ToMaxFlowerSize : Vector3 = tonumber(InfoField.MinP - FlowerPollen.Size.Y)
-                        local FlowerPosTime : Vector3 = FlowerPollen.Position + Vector3.new(0,InfoField.RegenFlower,0)
-                        --print(ToMaxFlower)
-                       -- print(ToMaxFlowerSize)
-                        TweenModule:RegenUp(FlowerPollen,ToMaxFlower,InfoField,DecAm,FlowerPosTime)
+                    --print(InfoField)
+                    if FlowerPollen.Size.Y <= 1.75 then                        
+                        TweenModule:RegenUp(FlowerPollen,DecAm)
                     end
                 end 
             end
         end
     end)
+
 end
+
+
+
 
 function FlowerEffect(Flower : Part)
     Flower.ParticleEmitter.Enabled = true
@@ -132,25 +130,40 @@ function FlowerEffect(Flower : Part)
     Flower.ParticleEmitter.Enabled = false
 end
 
-function DownFlower(Flower : Part, DecAmm : Vector3, FlowerTable : table)
+function DownFlower(Flower : Part, DecAm : Vector3, FlowerTable : table)
     if Flower.Size.Y > 0.85 then
-        DecAm = DecAmm
         coroutine.wrap(function()
             FlowerEffect(Flower)
         end)()
-
-        TweenModule:FlowerDown(Flower,DecAmm)
-        Flower:WaitForChild("TopTexture").Transparency = (FlowerTable.MaxP-Flower.Position.Y-DecAmm)/2.5
-        
+        _G.DecAm = DecAm
+        TweenModule:FlowerDown(Flower,DecAm)
+        Flower:WaitForChild("TopTexture").Transparency = (FlowerTable.MaxP-Flower.Position.Y-DecAm)/2.5
     end
 end
 
 
 Remotes.FlowerDownSize.OnClientEvent:Connect(DownFlower)
 
-for _, Field in next, workspace.GameSettings.Fields:GetChildren() do
-    FlowerCollect:UpFlower(Field)
-end
+for _, Field in next, (workspace.GameSettings.Fields:GetChildren()) do
+    -- local InfoField : table
+     task.spawn(function()
+         while true do
+             task.wait(3)
+             for _, Field2 in next, (Field:GetChildren()) do
+                 if Field2:IsA("BasePart") then
+                    -- InfoField = GetField.Flowers[Field2:GetAttribute('ID')]
+                     -- сделать по этапно 
+                     if Field2.Size.Y <= 1.75 then -- 0.893
+                         task.delay(3 ,function()
+                             TweenModule:RegenUp(Field2,_G.DecAm)
+                         end)
+                         break
+                     end 
+                 end
+             end
+         end
+     end)
+ end
 
 for _, FieldFolder in next, workspace.GameSettings.FieldZone:GetChildren() do
     local ZonePlus : Instance = Zone.new(FieldFolder)
